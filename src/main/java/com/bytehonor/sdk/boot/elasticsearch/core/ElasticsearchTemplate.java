@@ -42,9 +42,9 @@ import com.google.gson.Gson;
  * @author lijianqiang
  *
  */
-public class ElasticsearchWriteTemplate {
+public class ElasticsearchTemplate {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ElasticsearchWriteTemplate.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ElasticsearchTemplate.class);
 
     private static final Gson GSON = new Gson();
 

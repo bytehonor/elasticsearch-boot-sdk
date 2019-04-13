@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import com.bytehonor.sdk.boot.elasticsearch.core.ElasticsearchRestClientFactory;
-import com.bytehonor.sdk.boot.elasticsearch.core.ElasticsearchWriteTemplate;
+import com.bytehonor.sdk.boot.elasticsearch.core.ElasticsearchTemplate;
 
 @Configuration
 @EnableConfigurationProperties(ElasticsearchProperties.class)
@@ -61,8 +61,8 @@ public class ElasticsearchAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(HttpHost.class)
-    @ConditionalOnMissingBean(ElasticsearchWriteTemplate.class)
-    public ElasticsearchWriteTemplate elasticsearchWriteTemplate() {
-        return new ElasticsearchWriteTemplate();
+    @ConditionalOnMissingBean(ElasticsearchTemplate.class)
+    public ElasticsearchTemplate elasticsearchWriteTemplate() {
+        return new ElasticsearchTemplate();
     }
 }

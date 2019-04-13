@@ -28,14 +28,14 @@ import com.bytehonor.sdk.boot.elasticsearch.util.ElasticsearchUtils;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @FixMethodOrder(MethodSorters.JVM)
-public class ElasticsearchWriteTemplateTest {
+public class ElasticsearchTemplateTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ElasticsearchWriteTemplateTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ElasticsearchTemplateTest.class);
 
     private static final String INDEX_NAME = "foo";
 
     @Autowired(required = false)
-    private ElasticsearchWriteTemplate elasticsearchWriteTemplate;
+    private ElasticsearchTemplate elasticsearchWriteTemplate;
     
     @Test
     public void testConfig() {
