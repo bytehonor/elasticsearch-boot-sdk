@@ -24,7 +24,7 @@
     {
       "name": "elasticsearch.boot.rest-host",
       "type": "java.lang.String",
-      "description": "Elasticsearch Rest Host, ConditionalOnProperty",
+      "description": "Elasticsearch Rest Host, like 127.0.0.1, ConditionalOnProperty",
       "sourceType": "com.bytehonor.sdk.boot.elasticsearch.config.ElasticsearchProperties"
     },
     {

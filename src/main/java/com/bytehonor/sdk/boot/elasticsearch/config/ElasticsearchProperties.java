@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ElasticsearchProperties {
 
     /**
-     * Elasticsearch Rest Host
+     * Elasticsearch Rest Host, like 127.0.0.1
      */
     private String restHost;
 
