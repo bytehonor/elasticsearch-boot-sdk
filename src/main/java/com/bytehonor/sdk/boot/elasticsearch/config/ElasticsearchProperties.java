@@ -12,9 +12,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ElasticsearchProperties {
 
     /**
-     * Elasticsearch Rest Host, default: 127.0.0.1
+     * Elasticsearch Rest Host
      */
-    private String restHost = "127.0.0.1";
+    private String restHost;
 
     /**
      * Elasticsearch Rest Port, default: 9200

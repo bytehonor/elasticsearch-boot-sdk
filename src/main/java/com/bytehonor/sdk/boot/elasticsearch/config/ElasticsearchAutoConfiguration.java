@@ -4,7 +4,9 @@ import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +24,7 @@ public class ElasticsearchAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(HttpHost.class)
+    @ConditionalOnProperty(prefix = "elasticsearch.boot", name = "rest-host")
     public HttpHost httpHost() {
         return new HttpHost(elasticsearchRestProperties.getRestHost(), elasticsearchRestProperties.getRestPort(),
                 elasticsearchRestProperties.getRestSchema());
@@ -35,6 +38,7 @@ public class ElasticsearchAutoConfiguration {
      * @return EleasticsearchRestClientFactory
      */
     @Bean(initMethod = "init", destroyMethod = "close")
+    @ConditionalOnBean(HttpHost.class)
     @ConditionalOnMissingBean(ElasticsearchRestClientFactory.class)
     public ElasticsearchRestClientFactory getFactory() {
         return ElasticsearchRestClientFactory.build(httpHost(), elasticsearchRestProperties.getRestConnectNum(),
@@ -43,17 +47,20 @@ public class ElasticsearchAutoConfiguration {
 
     @Bean
     @Scope("singleton")
+    @ConditionalOnBean(ElasticsearchRestClientFactory.class)
     public RestClient getRestClient() {
         return getFactory().getClient();
     }
 
     @Bean
     @Scope("singleton")
+    @ConditionalOnBean(ElasticsearchRestClientFactory.class)
     public RestHighLevelClient getRHLClient() {
         return getFactory().getRhlClient();
     }
 
     @Bean
+    @ConditionalOnBean(HttpHost.class)
     @ConditionalOnMissingBean(ElasticsearchWriteTemplate.class)
     public ElasticsearchWriteTemplate elasticsearchWriteTemplate() {
         return new ElasticsearchWriteTemplate();
