@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
+import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -85,7 +85,7 @@ public class ElasticsearchTemplateTest {
         boolean isOk = true;
         try {
             XContentBuilder builder = FooMapping.elasticsearch();
-            PutMappingResponse response = elasticsearchWriteTemplate.putMapping(INDEX_NAME, builder);
+            AcknowledgedResponse response = elasticsearchWriteTemplate.putMapping(INDEX_NAME, builder);
             isOk = response.isAcknowledged();
         } catch (IOException e) {
             LOG.error("testPutMapping", e);

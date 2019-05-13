@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.1.0.RELEASE'
+        springBootVersion = '2.1.4.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -17,7 +17,7 @@ apply plugin: 'io.spring.dependency-management'
 apply from: 'repository.gradle'
 
 group = 'com.bytehonor.sdk'
-version = '0.1.1'
+version = '0.1.2'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
@@ -29,8 +29,8 @@ repositories {
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('com.google.code.gson:gson')
-    implementation('org.elasticsearch:elasticsearch:6.4.2')
-    implementation('org.elasticsearch.client:elasticsearch-rest-high-level-client:6.4.2')
+    implementation('org.elasticsearch:elasticsearch:6.7.2')
+    implementation('org.elasticsearch.client:elasticsearch-rest-high-level-client:6.7.2')
     runtimeOnly('org.springframework.boot:spring-boot-devtools')
     compileOnly('org.springframework.boot:spring-boot-configuration-processor')
     testImplementation('org.springframework.boot:spring-boot-starter-test')

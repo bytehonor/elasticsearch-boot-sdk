@@ -6,11 +6,6 @@ import java.util.List;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -18,12 +13,15 @@ import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.client.indices.CreateIndexResponse;
+import org.elasticsearch.client.indices.GetIndexRequest;
+import org.elasticsearch.client.indices.PutMappingRequest;
 import org.elasticsearch.common.Nullable;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.slf4j.Logger;
@@ -63,8 +61,7 @@ public class ElasticsearchTemplate {
      */
     public boolean existsIndex(String rawIndexName) throws IOException {
         String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
-        GetIndexRequest request = new GetIndexRequest();
-        request.indices(indexName);
+        GetIndexRequest request = new GetIndexRequest(indexName);
         return restHighLevelClient.indices().exists(request, RequestOptions.DEFAULT);
     }
 
@@ -77,41 +74,41 @@ public class ElasticsearchTemplate {
      */
     public CreateIndexResponse createIndex(String rawIndexName) throws IOException {
         String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
-        CreateIndexRequest createIndexRequest = Requests.createIndexRequest(indexName); // 创建索引
+        CreateIndexRequest createIndexRequest = new CreateIndexRequest(indexName); // 创建索引
         XContentBuilder builder = ElasticsearchUtils.initBuilderWhenCreateIndex();
         createIndexRequest.source(builder);
         return restHighLevelClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
     }
 
-    public PutMappingResponse putMapping(String indexName, XContentBuilder builder) throws IOException {
+    public AcknowledgedResponse putMapping(String indexName, XContentBuilder builder) throws IOException {
         indexName = ElasticsearchUtils.formatIndexName(indexName, applicationName);
         PutMappingRequest request = new PutMappingRequest(indexName);
-        request.type(ESConstants.TYPE_NAME);
+//        request.type(ESConstants.TYPE_NAME);
         request.source(builder);
-        request.timeout(TimeValue.timeValueMinutes(2));
+//        request.timeout(TimeValue.timeValueMinutes(2));
         return restHighLevelClient.indices().putMapping(request, RequestOptions.DEFAULT);
     }
 
     public void putMappingAsync(String rawindexName, XContentBuilder builder, @Nullable ESWriteListener callback) {
         final String indexName = ElasticsearchUtils.formatIndexName(rawindexName, applicationName);
         final PutMappingRequest request = new PutMappingRequest(indexName);
-        request.type(ESConstants.TYPE_NAME);
+//        request.type(ESConstants.TYPE_NAME);
         request.source(builder);
-        ActionListener<PutMappingResponse> listener = new ActionListener<PutMappingResponse>() {
-
-            @Override
-            public void onResponse(PutMappingResponse response) {
-                LOG.info("putMappingAsync, indexName:{}, isAcknowledged:{}", indexName, response.isAcknowledged());
-                if (callback != null) {
-                    callback.onFinished(new ESWriteResult("indexAsync"));
-                }
-            }
+        ActionListener<AcknowledgedResponse> listener = new ActionListener<AcknowledgedResponse>() {
 
             @Override
             public void onFailure(Exception e) {
                 LOG.error("putMappingAsync error, indexName:{}, error:{}", indexName, e);
                 if (callback != null) {
                     callback.onFinished(new ESWriteResult(false, e.getMessage(), "indexAsync"));
+                }
+            }
+
+            @Override
+            public void onResponse(AcknowledgedResponse response) {
+                LOG.info("putMappingAsync, indexName:{}, isAcknowledged:{}", indexName, response.isAcknowledged());
+                if (callback != null) {
+                    callback.onFinished(new ESWriteResult("indexAsync"));
                 }
             }
         };
