@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import com.bytehonor.sdk.boot.elasticsearch.constant.ESConstants;
 import com.bytehonor.sdk.boot.elasticsearch.util.ElasticsearchUtils;
 import com.google.gson.Gson;
 
@@ -127,7 +126,8 @@ public class ElasticsearchTemplate {
         Assert.notNull(model, "model cannt be null!");
         Assert.notNull(model.esid(), "esid cannt be null!");
         String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
-        IndexRequest indexRequest = new IndexRequest(indexName, ESConstants.TYPE_NAME, model.esid());
+        IndexRequest indexRequest = new IndexRequest(indexName);
+        indexRequest.id(model.esid());
         String source = GSON.toJson(model);
         indexRequest.source(source, XContentType.JSON);
         return restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
@@ -144,7 +144,8 @@ public class ElasticsearchTemplate {
         Assert.notNull(model, "model cannt be null!");
         Assert.notNull(model.esid(), "esid cannt be null!");
         final String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
-        IndexRequest indexRequest = new IndexRequest(indexName, ESConstants.TYPE_NAME, model.esid());
+        IndexRequest indexRequest = new IndexRequest(indexName);
+        indexRequest.id(model.esid());
         String source = GSON.toJson(model);
         indexRequest.source(source, XContentType.JSON);
         ActionListener<IndexResponse> listener = new ActionListener<IndexResponse>() {
@@ -180,7 +181,7 @@ public class ElasticsearchTemplate {
     public DeleteResponse delete(String rawIndexName, String esid) throws IOException {
         Assert.notNull(esid, "esid cannt be null!");
         String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
-        DeleteRequest request = new DeleteRequest(indexName, ESConstants.TYPE_NAME, esid);
+        DeleteRequest request = new DeleteRequest(indexName, esid);
         return restHighLevelClient.delete(request, RequestOptions.DEFAULT);
     }
 
@@ -194,7 +195,7 @@ public class ElasticsearchTemplate {
     public void deleteAsync(String rawIndexName, String esid, @Nullable ESWriteListener callback) {
         Assert.notNull(esid, "esid cannt be null!");
         final String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
-        DeleteRequest request = new DeleteRequest(indexName, ESConstants.TYPE_NAME, esid);
+        DeleteRequest request = new DeleteRequest(indexName, esid);
         ActionListener<DeleteResponse> listener = new ActionListener<DeleteResponse>() {
 
             @Override
@@ -233,7 +234,7 @@ public class ElasticsearchTemplate {
             if (model.esid() == null) {
                 continue;
             }
-            IndexRequest indexRequest = new IndexRequest(indexName, ESConstants.TYPE_NAME);
+            IndexRequest indexRequest = new IndexRequest(indexName);
             indexRequest.id(model.esid());
             String source = GSON.toJson(model);
             indexRequest.source(source, XContentType.JSON);
@@ -258,7 +259,7 @@ public class ElasticsearchTemplate {
             if (model.esid() == null) {
                 continue;
             }
-            IndexRequest indexRequest = new IndexRequest(indexName, ESConstants.TYPE_NAME);
+            IndexRequest indexRequest = new IndexRequest(indexName);
             indexRequest.id(model.esid());
             String source = GSON.toJson(model);
             indexRequest.source(source, XContentType.JSON);
@@ -274,16 +275,16 @@ public class ElasticsearchTemplate {
                     if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.INDEX
                             || bulkItemResponse.getOpType() == DocWriteRequest.OpType.CREATE) {
                         IndexResponse indexResponse = (IndexResponse) itemResponse;
-                        LOG.info("IndexResponse, index:{}, type:{}, id:{}, version:{}", indexResponse.getIndex(),
-                                indexResponse.getType(), indexResponse.getId(), indexResponse.getVersion());
+                        LOG.debug("IndexResponse, index:{}, id:{}, version:{}", indexResponse.getIndex(), indexResponse.getId(),
+                                indexResponse.getVersion());
                     } else if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.UPDATE) {
                         UpdateResponse updateResponse = (UpdateResponse) itemResponse;
-                        LOG.info("UpdateResponse, index:{}, type:{}, id:{}, version:{}", updateResponse.getIndex(),
-                                updateResponse.getType(), updateResponse.getId(), updateResponse.getVersion());
+                        LOG.debug("UpdateResponse, index:{}, id:{}, version:{}", updateResponse.getIndex(),
+                                updateResponse.getId(), updateResponse.getVersion());
                     } else if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.DELETE) {
                         DeleteResponse deleteResponse = (DeleteResponse) itemResponse;
-                        LOG.info("DeleteResponse, index:{}, type:{}, id:{}, version:{}", deleteResponse.getIndex(),
-                                deleteResponse.getType(), deleteResponse.getId(), deleteResponse.getVersion());
+                        LOG.info("DeleteResponse, index:{}, id:{}, version:{}", deleteResponse.getIndex(),
+                                deleteResponse.getId(), deleteResponse.getVersion());
                     }
                 }
                 if (callback != null) {

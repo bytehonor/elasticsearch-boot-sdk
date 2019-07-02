@@ -62,10 +62,9 @@ public class ElasticsearchUtils {
         Objects.requireNonNull(indexResponse, "indexResponse");
         ESWriteResult result = new ESWriteResult();
         String index = indexResponse.getIndex();
-        String type = indexResponse.getType();
         String id = indexResponse.getId();
         long version = indexResponse.getVersion();
-        LOG.info("index, id:{}, index:{}, type:{}, version:{}", id, index, type, version);
+        LOG.info("index, id:{}, index:{}, version:{}", id, index, version);
         if (indexResponse.getResult() == DocWriteResponse.Result.CREATED) {
             LOG.debug("CREATED");
             return result;
@@ -106,18 +105,18 @@ public class ElasticsearchUtils {
             if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.INDEX
                     || bulkItemResponse.getOpType() == DocWriteRequest.OpType.CREATE) {
                 IndexResponse indexResponse = (IndexResponse) itemResponse;
-                LOG.debug("IndexResponse, index:{}, type:{}, id:{}, version:{}", indexResponse.getIndex(),
-                        indexResponse.getType(), indexResponse.getId(), indexResponse.getVersion());
+                LOG.debug("IndexResponse, index:{}, id:{}, version:{}", indexResponse.getIndex(), indexResponse.getId(),
+                        indexResponse.getVersion());
                 create++;
             } else if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.UPDATE) {
                 UpdateResponse updateResponse = (UpdateResponse) itemResponse;
-                LOG.debug("UpdateResponse, index:{}, type:{}, id:{}, version:{}", updateResponse.getIndex(),
-                        updateResponse.getType(), updateResponse.getId(), updateResponse.getVersion());
+                LOG.debug("UpdateResponse, index:{}, id:{}, version:{}", updateResponse.getIndex(),
+                        updateResponse.getId(), updateResponse.getVersion());
                 update++;
             } else if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.DELETE) {
                 DeleteResponse deleteResponse = (DeleteResponse) itemResponse;
-                LOG.info("DeleteResponse, index:{}, type:{}, id:{}, version:{}", deleteResponse.getIndex(),
-                        deleteResponse.getType(), deleteResponse.getId(), deleteResponse.getVersion());
+                LOG.info("DeleteResponse, index:{}, id:{}, version:{}", deleteResponse.getIndex(),
+                        deleteResponse.getId(), deleteResponse.getVersion());
                 delete++;
             }
         }
