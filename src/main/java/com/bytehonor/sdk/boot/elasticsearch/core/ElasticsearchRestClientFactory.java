@@ -29,7 +29,7 @@ public class ElasticsearchRestClientFactory {
     public static int MAX_CONN_PER_ROUTE = 10;
     public static int MAX_CONN_TOTAL = 30;
 
-    private static HttpHost HTTP_HOST;
+    private static HttpHost[] HTTP_HOST;
     private RestClientBuilder builder;
     private RestClient restClient;
     private RestHighLevelClient restHighLevelClient;
@@ -46,17 +46,17 @@ public class ElasticsearchRestClientFactory {
         LOG.info("construct");
     }
 
-    public static ElasticsearchRestClientFactory build(HttpHost httpHost, Integer maxConnectNum,
+    public static ElasticsearchRestClientFactory build(HttpHost[] httpHosts, Integer maxConnectNum,
             Integer maxConnectPerRoute) {
-        HTTP_HOST = httpHost;
+        HTTP_HOST = httpHosts;
         MAX_CONN_TOTAL = maxConnectNum;
         MAX_CONN_PER_ROUTE = maxConnectPerRoute;
         return LazyHolder.instance;
     }
 
-    public static ElasticsearchRestClientFactory build(HttpHost httpHost, Integer connectTimeOut, Integer socketTimeOut,
+    public static ElasticsearchRestClientFactory build(HttpHost[] httpHosts, Integer connectTimeOut, Integer socketTimeOut,
             Integer connectionRequestTime, Integer maxConnectNum, Integer maxConnectPerRoute) {
-        HTTP_HOST = httpHost;
+        HTTP_HOST = httpHosts;
         CONNECT_TIMEOUT_MILLIS = connectTimeOut;
         SOCKET_TIMEOUT_MILLIS = socketTimeOut;
         CONNECTION_REQUEST_TIMEOUT_MILLIS = connectionRequestTime;

@@ -12,14 +12,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ElasticsearchProperties {
 
     /**
-     * Elasticsearch Rest Host, like 127.0.0.1, ConditionalOnProperty
+     * Elasticsearch Rest Host List, like 127.0.0.1:9200, ConditionalOnProperty
      */
-    private String restHost;
-
-    /**
-     * Elasticsearch Rest Port, default: 9200
-     */
-    private Integer restPort = 9200;
+    private String restHostList;
 
     /**
      * Elasticsearch Rest Schema, default: http
@@ -35,22 +30,6 @@ public class ElasticsearchProperties {
      * Elasticsearch Rest ConnectPerRoute, default: 10
      */
     private Integer restConnectPerRoute = 10;
-
-    public String getRestHost() {
-        return restHost;
-    }
-
-    public void setRestHost(String restHost) {
-        this.restHost = restHost;
-    }
-
-    public Integer getRestPort() {
-        return restPort;
-    }
-
-    public void setRestPort(Integer restPort) {
-        this.restPort = restPort;
-    }
 
     public String getRestSchema() {
         return restSchema;
@@ -74,6 +53,14 @@ public class ElasticsearchProperties {
 
     public void setRestConnectPerRoute(Integer restConnectPerRoute) {
         this.restConnectPerRoute = restConnectPerRoute;
+    }
+
+    public String getRestHostList() {
+        return restHostList;
+    }
+
+    public void setRestHostList(String restHostList) {
+        this.restHostList = restHostList;
     }
 
 }

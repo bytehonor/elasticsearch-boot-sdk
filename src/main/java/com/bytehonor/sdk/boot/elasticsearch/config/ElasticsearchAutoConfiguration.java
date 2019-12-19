@@ -3,6 +3,8 @@ package com.bytehonor.sdk.boot.elasticsearch.config;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -19,15 +21,28 @@ import com.bytehonor.sdk.boot.elasticsearch.core.ElasticsearchTemplate;
 @EnableConfigurationProperties(ElasticsearchProperties.class)
 public class ElasticsearchAutoConfiguration {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ElasticsearchAutoConfiguration.class);
+
     @Autowired
     private ElasticsearchProperties elasticsearchRestProperties;
 
     @Bean
     @ConditionalOnMissingBean(HttpHost.class)
-    @ConditionalOnProperty(prefix = "elasticsearch.boot", name = "rest-host")
-    public HttpHost httpHost() {
-        return new HttpHost(elasticsearchRestProperties.getRestHost(), elasticsearchRestProperties.getRestPort(),
-                elasticsearchRestProperties.getRestSchema());
+    @ConditionalOnProperty(prefix = "elasticsearch.boot", name = "rest-host-list")
+    public HttpHost[] httpHost() {
+        // 解析hostlist配置信息
+        String[] split = elasticsearchRestProperties.getRestHostList().split(",");
+        int length = split.length;
+        // 创建HttpHost数组，其中存放es主机和端口的配置信息
+        HttpHost[] httpHosts = new HttpHost[length];
+        for (int i = 0; i < length; i++) {
+            String item = split[i];
+            String[] host = item.split(":");
+            httpHosts[i] = new HttpHost(host[0], Integer.parseInt(host[1]),
+                    elasticsearchRestProperties.getRestSchema());
+        }
+        LOG.info("init HttpHost, size:{}", length);
+        return httpHosts;
     }
 
     /**
