@@ -5,7 +5,7 @@ import org.apache.http.message.BasicHeader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-public class ESConstants {
+public class EsConstants {
 	
 	public static Header[] HEADERS = new Header[] {
 			new BasicHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE) };

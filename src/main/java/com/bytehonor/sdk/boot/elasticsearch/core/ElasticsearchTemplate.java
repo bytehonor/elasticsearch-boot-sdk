@@ -88,7 +88,7 @@ public class ElasticsearchTemplate {
         return restHighLevelClient.indices().putMapping(request, RequestOptions.DEFAULT);
     }
 
-    public void putMappingAsync(String rawindexName, XContentBuilder builder, @Nullable ESWriteListener callback) {
+    public void putMappingAsync(String rawindexName, XContentBuilder builder, @Nullable EsWriteListener callback) {
         final String indexName = ElasticsearchUtils.formatIndexName(rawindexName, applicationName);
         final PutMappingRequest request = new PutMappingRequest(indexName);
 //        request.type(ESConstants.TYPE_NAME);
@@ -99,7 +99,7 @@ public class ElasticsearchTemplate {
             public void onFailure(Exception e) {
                 LOG.error("putMappingAsync error, indexName:{}, error:{}", indexName, e);
                 if (callback != null) {
-                    callback.onFinished(new ESWriteResult(false, e.getMessage(), "indexAsync"));
+                    callback.onFinished(new EsWriteResult(false, e.getMessage(), "indexAsync"));
                 }
             }
 
@@ -107,7 +107,7 @@ public class ElasticsearchTemplate {
             public void onResponse(AcknowledgedResponse response) {
                 LOG.info("putMappingAsync, indexName:{}, isAcknowledged:{}", indexName, response.isAcknowledged());
                 if (callback != null) {
-                    callback.onFinished(new ESWriteResult("indexAsync"));
+                    callback.onFinished(new EsWriteResult("indexAsync"));
                 }
             }
         };
@@ -122,7 +122,7 @@ public class ElasticsearchTemplate {
      * @return
      * @throws IOException
      */
-    public <T extends ESData> IndexResponse index(String rawIndexName, T model) throws IOException {
+    public <T extends EsEntity> IndexResponse index(String rawIndexName, T model) throws IOException {
         Assert.notNull(model, "model cannt be null!");
         Assert.notNull(model.esid(), "esid cannt be null!");
         String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
@@ -140,7 +140,7 @@ public class ElasticsearchTemplate {
      * @param model
      * @param listener
      */
-    public <T extends ESData> void indexAsync(String rawIndexName, T model, @Nullable ESWriteListener callback) {
+    public <T extends EsEntity> void indexAsync(String rawIndexName, T model, @Nullable EsWriteListener callback) {
         Assert.notNull(model, "model cannt be null!");
         Assert.notNull(model.esid(), "esid cannt be null!");
         final String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
@@ -154,7 +154,7 @@ public class ElasticsearchTemplate {
             public void onResponse(IndexResponse response) {
                 LOG.debug("indexAsync indexName:{}, id:{}", response.getIndex(), response.getId());
                 if (callback != null) {
-                    callback.onFinished(new ESWriteResult("indexAsync"));
+                    callback.onFinished(new EsWriteResult("indexAsync"));
                 }
             }
 
@@ -162,7 +162,7 @@ public class ElasticsearchTemplate {
             public void onFailure(Exception e) {
                 LOG.error("indexAsync error, indexName:{}, error:{}", indexName, e);
                 if (callback != null) {
-                    callback.onFinished(new ESWriteResult(false, e.getMessage(), "indexAsync"));
+                    callback.onFinished(new EsWriteResult(false, e.getMessage(), "indexAsync"));
                 }
             }
 
@@ -192,7 +192,7 @@ public class ElasticsearchTemplate {
      * @param esid
      * @param listener
      */
-    public void deleteAsync(String rawIndexName, String esid, @Nullable ESWriteListener callback) {
+    public void deleteAsync(String rawIndexName, String esid, @Nullable EsWriteListener callback) {
         Assert.notNull(esid, "esid cannt be null!");
         final String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
         DeleteRequest request = new DeleteRequest(indexName, esid);
@@ -202,7 +202,7 @@ public class ElasticsearchTemplate {
             public void onResponse(DeleteResponse response) {
                 LOG.info("deleteAsync indexName:{}, id:{}", response.getIndex(), response.getId());
                 if (callback != null) {
-                    callback.onFinished(new ESWriteResult("deleteAsync"));
+                    callback.onFinished(new EsWriteResult("deleteAsync"));
                 }
             }
 
@@ -210,7 +210,7 @@ public class ElasticsearchTemplate {
             public void onFailure(Exception e) {
                 LOG.error("deleteAsync error, indexName:{}, error:{}", indexName, e.getMessage());
                 if (callback != null) {
-                    callback.onFinished(new ESWriteResult(false, e.getMessage(), "deleteAsync"));
+                    callback.onFinished(new EsWriteResult(false, e.getMessage(), "deleteAsync"));
                 }
             }
         };
@@ -225,7 +225,7 @@ public class ElasticsearchTemplate {
      * @return
      * @throws IOException
      */
-    public <T extends ESData> BulkResponse bulk(String rawIndexName, List<T> models) throws IOException {
+    public <T extends EsEntity> BulkResponse bulk(String rawIndexName, List<T> models) throws IOException {
         String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
 
         BulkRequest bulkRequest = new BulkRequest();
@@ -250,7 +250,7 @@ public class ElasticsearchTemplate {
      * @param models
      * @param listener
      */
-    public <T extends ESData> void bulkAsync(String rawIndexName, List<T> models, @Nullable ESWriteListener callback) {
+    public <T extends EsEntity> void bulkAsync(String rawIndexName, List<T> models, @Nullable EsWriteListener callback) {
         final String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
 
         BulkRequest bulkRequest = new BulkRequest();
@@ -288,7 +288,7 @@ public class ElasticsearchTemplate {
                     }
                 }
                 if (callback != null) {
-                    callback.onFinished(new ESWriteResult("bulkAsync"));
+                    callback.onFinished(new EsWriteResult("bulkAsync"));
                 }
             }
 
@@ -296,7 +296,7 @@ public class ElasticsearchTemplate {
             public void onFailure(Exception e) {
                 LOG.error("bulkAsync error, indexName:{}, error:{}", indexName, e.getMessage());
                 if (callback != null) {
-                    callback.onFinished(new ESWriteResult(false, e.getMessage(), "bulkAsync"));
+                    callback.onFinished(new EsWriteResult(false, e.getMessage(), "bulkAsync"));
                 }
             }
 

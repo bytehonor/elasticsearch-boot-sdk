@@ -1,21 +1,21 @@
 package com.bytehonor.sdk.boot.elasticsearch.core;
 
-public class ESWriteResult {
+public class EsWriteResult {
     private boolean success;
 
     private String message;
 
     private String action;
 
-    public ESWriteResult() {
+    public EsWriteResult() {
         this(true, "success", "");
     }
 
-    public ESWriteResult(String action) {
+    public EsWriteResult(String action) {
         this(true, "success", action);
     }
 
-    public ESWriteResult(boolean success, String message, String action) {
+    public EsWriteResult(boolean success, String message, String action) {
         this.success = success;
         this.message = message;
         this.action = action;

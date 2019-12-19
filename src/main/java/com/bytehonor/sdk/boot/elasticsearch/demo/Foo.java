@@ -1,8 +1,8 @@
 package com.bytehonor.sdk.boot.elasticsearch.demo;
 
-import com.bytehonor.sdk.boot.elasticsearch.core.ESData;
+import com.bytehonor.sdk.boot.elasticsearch.core.EsEntity;
 
-public class Foo implements ESData {
+public class Foo implements EsEntity {
 	private static final long serialVersionUID = -3120704050548781869L;
 
 	private Long id;

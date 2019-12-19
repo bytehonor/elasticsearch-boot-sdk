@@ -107,7 +107,7 @@ public class ElasticsearchTemplateTest {
         boolean isOk = false;
         try {
             IndexResponse response = elasticsearchWriteTemplate.index(INDEX_NAME, foo);
-            ESWriteResult result = ElasticsearchUtils.checkIndexResponse(response);
+            EsWriteResult result = ElasticsearchUtils.checkIndexResponse(response);
             LOG.info("index, success:{}, message:{}", result.isSuccess(), result.getMessage());
             isOk = result.isSuccess();
         } catch (IOException e) {
@@ -133,7 +133,7 @@ public class ElasticsearchTemplateTest {
         boolean isOk = true;
         try {
             BulkResponse bulkResponse = elasticsearchWriteTemplate.bulk(INDEX_NAME, foos);
-            ESWriteResult result = ElasticsearchUtils.checkBulkResponse(bulkResponse);
+            EsWriteResult result = ElasticsearchUtils.checkBulkResponse(bulkResponse);
             LOG.info("bulk, success:{}, message:{}", result.isSuccess(), result.getMessage());
             isOk = result.isSuccess();
         } catch (IOException e) {

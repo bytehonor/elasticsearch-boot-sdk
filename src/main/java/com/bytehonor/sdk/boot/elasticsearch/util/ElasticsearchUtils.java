@@ -16,8 +16,8 @@ import org.elasticsearch.common.xcontent.json.JsonXContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.boot.elasticsearch.constant.ESConstants;
-import com.bytehonor.sdk.boot.elasticsearch.core.ESWriteResult;
+import com.bytehonor.sdk.boot.elasticsearch.constant.EsConstants;
+import com.bytehonor.sdk.boot.elasticsearch.core.EsWriteResult;
 
 public class ElasticsearchUtils {
 
@@ -45,7 +45,7 @@ public class ElasticsearchUtils {
         {
             builder.startObject("mappings");
             {
-                builder.startObject(ESConstants.TYPE_NAME).endObject();
+                builder.startObject(EsConstants.TYPE_NAME).endObject();
             }
             builder.endObject();
             builder.startObject("settings");
@@ -58,9 +58,9 @@ public class ElasticsearchUtils {
         return builder;
     }
 
-    public static ESWriteResult checkIndexResponse(IndexResponse indexResponse) {
+    public static EsWriteResult checkIndexResponse(IndexResponse indexResponse) {
         Objects.requireNonNull(indexResponse, "indexResponse");
-        ESWriteResult result = new ESWriteResult();
+        EsWriteResult result = new EsWriteResult();
         String index = indexResponse.getIndex();
         String id = indexResponse.getId();
         long version = indexResponse.getVersion();
@@ -88,8 +88,8 @@ public class ElasticsearchUtils {
         return result;
     }
 
-    public static ESWriteResult checkBulkResponse(BulkResponse bulkResponse) {
-        ESWriteResult result = new ESWriteResult("bulk");
+    public static EsWriteResult checkBulkResponse(BulkResponse bulkResponse) {
+        EsWriteResult result = new EsWriteResult("bulk");
         int create = 0;
         int update = 0;
         int delete = 0;
