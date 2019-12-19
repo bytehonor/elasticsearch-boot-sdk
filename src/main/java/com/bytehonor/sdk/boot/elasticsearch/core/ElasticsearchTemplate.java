@@ -223,6 +223,17 @@ public class ElasticsearchTemplate {
      * @return
      * @throws IOException
      */
+    public <T extends EsEntity> void indexBatch(String rawIndexName, List<T> models) throws IOException {
+        bulkAsync(rawIndexName, models, null);
+    }
+    /**
+     * 批量索引操作
+     * 
+     * @param rawIndexName
+     * @param models
+     * @return
+     * @throws IOException
+     */
     public <T extends EsEntity> BulkResponse bulk(String rawIndexName, List<T> models) throws IOException {
         String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
 
