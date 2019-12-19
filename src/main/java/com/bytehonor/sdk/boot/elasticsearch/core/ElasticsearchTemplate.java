@@ -2,6 +2,7 @@ package com.bytehonor.sdk.boot.elasticsearch.core;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.DocWriteRequest;
@@ -28,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.Assert;
 
 import com.bytehonor.sdk.boot.elasticsearch.util.ElasticsearchUtils;
 import com.google.gson.Gson;
@@ -123,13 +123,12 @@ public class ElasticsearchTemplate {
      * @throws IOException
      */
     public <T extends EsEntity> IndexResponse index(String rawIndexName, T model) throws IOException {
-        Assert.notNull(model, "model cannt be null!");
-        Assert.notNull(model.esid(), "esid cannt be null!");
+        Objects.requireNonNull(model, "model");
+        Objects.requireNonNull(model.esid(), "esid");
         String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
         IndexRequest indexRequest = new IndexRequest(indexName);
         indexRequest.id(model.esid());
-        String source = GSON.toJson(model);
-        indexRequest.source(source, XContentType.JSON);
+        indexRequest.source(GSON.toJson(model), XContentType.JSON);
         return restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
     }
 
@@ -141,13 +140,12 @@ public class ElasticsearchTemplate {
      * @param listener
      */
     public <T extends EsEntity> void indexAsync(String rawIndexName, T model, @Nullable EsWriteListener callback) {
-        Assert.notNull(model, "model cannt be null!");
-        Assert.notNull(model.esid(), "esid cannt be null!");
+        Objects.requireNonNull(model, "model");
+        Objects.requireNonNull(model.esid(), "esid");
         final String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
         IndexRequest indexRequest = new IndexRequest(indexName);
         indexRequest.id(model.esid());
-        String source = GSON.toJson(model);
-        indexRequest.source(source, XContentType.JSON);
+        indexRequest.source(GSON.toJson(model), XContentType.JSON);
         ActionListener<IndexResponse> listener = new ActionListener<IndexResponse>() {
 
             @Override
@@ -179,7 +177,7 @@ public class ElasticsearchTemplate {
      * @throws IOException
      */
     public DeleteResponse delete(String rawIndexName, String esid) throws IOException {
-        Assert.notNull(esid, "esid cannt be null!");
+        Objects.requireNonNull(esid, "esid");
         String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
         DeleteRequest request = new DeleteRequest(indexName, esid);
         return restHighLevelClient.delete(request, RequestOptions.DEFAULT);
@@ -193,7 +191,7 @@ public class ElasticsearchTemplate {
      * @param listener
      */
     public void deleteAsync(String rawIndexName, String esid, @Nullable EsWriteListener callback) {
-        Assert.notNull(esid, "esid cannt be null!");
+        Objects.requireNonNull(esid, "esid");
         final String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
         DeleteRequest request = new DeleteRequest(indexName, esid);
         ActionListener<DeleteResponse> listener = new ActionListener<DeleteResponse>() {
@@ -236,8 +234,7 @@ public class ElasticsearchTemplate {
             }
             IndexRequest indexRequest = new IndexRequest(indexName);
             indexRequest.id(model.esid());
-            String source = GSON.toJson(model);
-            indexRequest.source(source, XContentType.JSON);
+            indexRequest.source(GSON.toJson(model), XContentType.JSON);
             bulkRequest.add(indexRequest);
         }
         return restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
@@ -250,7 +247,8 @@ public class ElasticsearchTemplate {
      * @param models
      * @param listener
      */
-    public <T extends EsEntity> void bulkAsync(String rawIndexName, List<T> models, @Nullable EsWriteListener callback) {
+    public <T extends EsEntity> void bulkAsync(String rawIndexName, List<T> models,
+            @Nullable EsWriteListener callback) {
         final String indexName = ElasticsearchUtils.formatIndexName(rawIndexName, applicationName);
 
         BulkRequest bulkRequest = new BulkRequest();
@@ -261,8 +259,7 @@ public class ElasticsearchTemplate {
             }
             IndexRequest indexRequest = new IndexRequest(indexName);
             indexRequest.id(model.esid());
-            String source = GSON.toJson(model);
-            indexRequest.source(source, XContentType.JSON);
+            indexRequest.source(GSON.toJson(model), XContentType.JSON);
             bulkRequest.add(indexRequest);
         }
         ActionListener<BulkResponse> listener = new ActionListener<BulkResponse>() {
@@ -275,8 +272,8 @@ public class ElasticsearchTemplate {
                     if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.INDEX
                             || bulkItemResponse.getOpType() == DocWriteRequest.OpType.CREATE) {
                         IndexResponse indexResponse = (IndexResponse) itemResponse;
-                        LOG.debug("IndexResponse, index:{}, id:{}, version:{}", indexResponse.getIndex(), indexResponse.getId(),
-                                indexResponse.getVersion());
+                        LOG.debug("IndexResponse, index:{}, id:{}, version:{}", indexResponse.getIndex(),
+                                indexResponse.getId(), indexResponse.getVersion());
                     } else if (bulkItemResponse.getOpType() == DocWriteRequest.OpType.UPDATE) {
                         UpdateResponse updateResponse = (UpdateResponse) itemResponse;
                         LOG.debug("UpdateResponse, index:{}, id:{}, version:{}", updateResponse.getIndex(),
