@@ -1,26 +1,23 @@
-buildscript {
-    ext {
-        springBootVersion = '2.1.4.RELEASE'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
+plugins {
+	id 'org.springframework.boot' version '2.2.1.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'java'
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 apply from: 'repository.gradle'
 
 group = 'com.bytehonor.sdk'
-version = '0.1.3'
+version = '0.2.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+}
 
 repositories {
     mavenCentral()
@@ -29,9 +26,13 @@ repositories {
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('com.google.code.gson:gson')
-    implementation('org.elasticsearch:elasticsearch:7.2.0')
-    implementation('org.elasticsearch.client:elasticsearch-rest-high-level-client:7.2.0')
-    runtimeOnly('org.springframework.boot:spring-boot-devtools')
+    implementation('org.elasticsearch:elasticsearch:7.5.0')
+    implementation('org.elasticsearch.client:elasticsearch-rest-client:7.5.0')
+    implementation('org.elasticsearch.client:elasticsearch-rest-high-level-client:7.5.0') {
+        exclude group: 'org.elasticsearch', module: 'elasticsearch'
+        exclude group: 'org.elasticsearch.client', module: 'elasticsearch-rest-client'
+    }
+    developmentOnly('org.springframework.boot:spring-boot-devtools')
     compileOnly('org.springframework.boot:spring-boot-configuration-processor')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }

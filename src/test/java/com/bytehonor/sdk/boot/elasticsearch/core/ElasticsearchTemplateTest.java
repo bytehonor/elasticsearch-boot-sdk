@@ -36,7 +36,7 @@ public class ElasticsearchTemplateTest {
 
     @Autowired(required = false)
     private ElasticsearchTemplate elasticsearchWriteTemplate;
-    
+
     @Test
     public void testConfig() {
         boolean isOk = elasticsearchWriteTemplate != null;

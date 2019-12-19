@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ElasticsearchBootSdkApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ElasticsearchBootSdkApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ElasticsearchBootSdkApplication.class, args);
+    }
 
 }
