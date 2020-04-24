@@ -1,22 +1,26 @@
 plugins {
-	id 'org.springframework.boot' version '2.2.1.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-	id 'java'
+    id 'org.springframework.boot' version '2.2.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
+    id 'java-library'
 }
 
 apply from: 'repository.gradle'
 
 group = 'com.bytehonor.sdk'
-version = '0.2.0'
+version = '0.3.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
 configurations {
-	developmentOnly
-	runtimeClasspath {
-		extendsFrom developmentOnly
-	}
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
@@ -24,15 +28,15 @@ repositories {
 }
 
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-web')
-    implementation('com.google.code.gson:gson')
-    implementation('org.elasticsearch:elasticsearch:7.5.1')
-    implementation('org.elasticsearch.client:elasticsearch-rest-client:7.5.1')
-    implementation('org.elasticsearch.client:elasticsearch-rest-high-level-client:7.5.1') {
+    api('org.elasticsearch:elasticsearch:7.6.2')
+    api('org.elasticsearch.client:elasticsearch-rest-client:7.6.2')
+    api('org.elasticsearch.client:elasticsearch-rest-high-level-client:7.6.2') {
         exclude group: 'org.elasticsearch', module: 'elasticsearch'
         exclude group: 'org.elasticsearch.client', module: 'elasticsearch-rest-client'
     }
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('com.google.code.gson:gson')
     developmentOnly('org.springframework.boot:spring-boot-devtools')
-    compileOnly('org.springframework.boot:spring-boot-configuration-processor')
+    annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
